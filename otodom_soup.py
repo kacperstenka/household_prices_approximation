@@ -5,11 +5,13 @@ import re
 import csv
 
 ###
-csvName = 'otodom_test'
-csvPath = f'C:/Users/sevkq/OneDrive/Pulpit/{csvName}.csv'
+csvName = 'NewDataset'
+csvPath = f'C:/Users/Mati/Desktop/HousePrices/DataToSoup/{csvName}.csv'
+csvNameLinks = 'LinkiDoStron'
+csvPathLinks = f'C:/Users/Mati/Desktop/HousePrices/DataToSoup/{csvNameLinks}.csv'
 smallFlag = False
 #Liczba probek zapisanych do pliku csv
-numberOfSamples = 1130
+numberOfSamples = 20
 ###
 
 URL = "https://www.otodom.pl/pl/oferty/sprzedaz/dom/wroclaw"
@@ -35,6 +37,8 @@ extras_data = []
 security_data = []
 media_data = []
 
+
+
 URL_2 = "https://www.otodom.pl/"
 
 soup = BeautifulSoup(page.content, "html.parser")
@@ -44,19 +48,16 @@ n_o_pages_text = str(soup.find_all("script", id='__NEXT_DATA__'))
 n_o_pages = n_o_pages_text.find('"totalPages":')
 n_o_pages = n_o_pages_text[n_o_pages+len('"totalPages":'):n_o_pages+len('"totalPages":')+2]
 
-n_o_pages = 2
-
 #uzupełnianie linków do przełączania kolejnych stron
 URL_add = 'https://www.otodom.pl/pl/oferty/sprzedaz/dom/wroclaw?page='
 for i in range(int(n_o_pages)): #obejrzenie wszystkich ofert ze strony
-    link = str(soup.find_all("li", class_="css-p74l73 es62z2j17"))
+    link = str(soup.find_all("li", class_="css-p74l73 es62z2j19"))
     link.find('href="')
     remove_first_step = 0
-    for x in soup.find_all("li", class_="css-p74l73 es62z2j17"):
+    for x in soup.find_all("li", class_="css-p74l73 es62z2j19"):
         if remove_first_step > 0:
             x = str(x)
-            x = x[0:180] #narrow the found text 
-            print(x)
+            x = x[0:180] #narrow the found text
             x_start = x.index('href="') #after this expression we can find the link
             x_end = x.index('"><aside') #expression right after the link
             x = x[x_start+7:x_end] #link
@@ -67,7 +68,7 @@ for i in range(int(n_o_pages)): #obejrzenie wszystkich ofert ze strony
     #URL = "https://www.otodom.pl/pl/oferty/sprzedaz/dom/wroclaw"
     
     #soup = BeautifulSoup(page.content, "html.parser")
-    for x in range (len(soup.find_all("li", class_="css-p74l73 es62z2j17")) - 1):
+    for x in range (len(soup.find_all("li", class_="css-p74l73 es62z2j19")) - 1):
         content = requests.get(URL_full[x])
         soup2 = BeautifulSoup(content.content, "html.parser")
         
@@ -85,7 +86,10 @@ for i in range(int(n_o_pages)): #obejrzenie wszystkich ofert ze strony
         else:
             price_data[-1] = 'no info'
         #W PRZYPADKU BRAKU CENY W ZMIENNEJ price_data OFERTA NIE POSIADA CENY (W OFERCIE WIDNIEJE "ZAPYTAJ O CENĘ")
-        
+
+
+
+
         terrain_area_text = '"key":"terrain_area","value":"'
         terrain_area = (link2.find(terrain_area_text))
         terrain_area_data.append(link2[terrain_area+len(terrain_area_text):terrain_area+len(terrain_area_text)+4])
@@ -280,12 +284,16 @@ for i in range(int(n_o_pages)): #obejrzenie wszystkich ofert ze strony
     soup = BeautifulSoup(page.content, "html.parser")
 
 
+
 with open(csvPath, 'w+', newline='') as csvFile:
     writer = csv.writer(csvFile)
     for row in range(0, numberOfSamples):
-        writer.writerow([\
-        price_data[row],terrain_area_data[row],\
-        house_area_data[row],market_data[row],no_rooms_data[row],\
-        building_type_data[row],no_floors_data[row],construction_status_data[row],build_year_data[row],\
-        building_material_data[row],roof_type_data[row],heating_type_data[row],extras_data[row],security_data[row],\
-        media_data[row]])
+
+        writer.writerow([price_data[row],terrain_area_data[row],house_area_data[row],market_data[row],no_rooms_data[row]
+                            ,building_type_data[row],no_floors_data[row],construction_status_data[row],build_year_data[row],building_material_data[row],
+                         roof_type_data[row],heating_type_data[row],extras_data[row],security_data[row],media_data[row]])
+
+with open(csvPathLinks, 'w+', newline='') as csvFile:
+    writer = csv.writer(csvFile)
+    for row in range(0, numberOfSamples):
+        writer.writerow([URL_full[row]])

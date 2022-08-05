@@ -5,13 +5,13 @@ import re
 import csv
 
 ###
-csvName = 'NewDataset'
-csvPath = f'C:/Users/Mati/Desktop/HousePrices/DataToSoup/{csvName}.csv'
-csvNameLinks = 'LinkiDoStron'
-csvPathLinks = f'C:/Users/Mati/Desktop/HousePrices/DataToSoup/{csvNameLinks}.csv'
-smallFlag = False
+csv_name = 'NewDataset'
+csv_path = f'C:/Users/Mati/Desktop/HousePrices/DataToSoup/{csv_name}.csv'
+csv_name_links = 'LinkiDoStron'
+csv_path_links = f'C:/Users/Mati/Desktop/HousePrices/DataToSoup/{csv_name_links}.csv'
+small_flag = False
 #Liczba probek zapisanych do pliku csv
-numberOfSamples = 20
+number_of_samples = 10
 ###
 
 URL = "https://www.otodom.pl/pl/oferty/sprzedaz/dom/wroclaw"
@@ -271,11 +271,11 @@ for i in range(int(n_o_pages)): #obejrzenie wszystkich ofert ze strony
         media_data[-1] = var_str
         media_data[-1] = ''.join(media_data[-1])
 
-        if (x == numberOfSamples):
-            smallFlag = True
+        if (x == number_of_samples):
+            small_flag = True
             break;
 
-    if (smallFlag == True):
+    if (small_flag == True):
         break;
                 
     #utworzenie linku do kolejnej strony    
@@ -285,15 +285,20 @@ for i in range(int(n_o_pages)): #obejrzenie wszystkich ofert ze strony
 
 
 
-with open(csvPath, 'w+', newline='') as csvFile:
+with open(csv_path, 'w+', newline='') as csvFile:
     writer = csv.writer(csvFile)
-    for row in range(0, numberOfSamples):
-
+    for row in range(0, number_of_samples):
+        if(row == 0):
+            writer.writerow(["price_data","terrain_area_data","house_area_data","market_data","no_rooms_data",
+                            "building_type_data","no_floors_data","construction_status_data","build_year_data","building_material_data",
+                            "roof_type_data","heating_type_data","extras_data","security_data","media_data"])
         writer.writerow([price_data[row],terrain_area_data[row],house_area_data[row],market_data[row],no_rooms_data[row]
                             ,building_type_data[row],no_floors_data[row],construction_status_data[row],build_year_data[row],building_material_data[row],
                          roof_type_data[row],heating_type_data[row],extras_data[row],security_data[row],media_data[row]])
 
-with open(csvPathLinks, 'w+', newline='') as csvFile:
+with open(csv_path_links, 'w+', newline='') as csvFile:
     writer = csv.writer(csvFile)
-    for row in range(0, numberOfSamples):
+    for row in range(0, number_of_samples):
+        if(row == 0):
+            writer.writerow(["URL_full"])
         writer.writerow([URL_full[row]])
